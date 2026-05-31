@@ -11,11 +11,14 @@ pipeline {
         DOCKER_IMAGE = "demo-app" // 도커 이미지 이름
         CONTAINER_NAME = "springboot-container" // 도커 컨테이너 이름
         JAR_FILE_NAME = "app.jar" //복사할 jar 파일 이름
-        PORT = "8081" // 컨테이너와 연결할 포트
-        REMOTE_USER = "ec2-user" // 원격(spring) 서버 사용자 
-        REMOTE_HOST = "3.39.61.83" // 원격(spring) 서버IP(Public IP)
-        REMOTE_DIR = "/home/ec2-user/deploy" // 원격 서버에 파일 복사할 경로 
-        SSH_CREDENTIALS_ID = "08f1b836-edec-4fd3-ab72-5960a61b40e3" // Jenkins SSH 자격 증명 ID
+
+        PORT = "8081"                           // 컨테이너와 연결할 포트
+        REMOTE_USER = "ec2-user"                // 원격(spring) 서버 사용자 
+        REMOTE_HOST = "3.39.61.83"              // 원격(spring) 서버IP(Public IP)
+        REMOTE_DIR = "/home/ec2-user/deploy"    // 원격 서버에 파일 복사할 경로 
+
+        SSH_CREDENTIALS_ID = "08f1b836-edec-4fd3-ab72-5960a61b40e3" // Jenkins SSH 자격 증명 ID     
+        SECRET_FILE_ID = "27c662ae-5e40-432f-af9e-77df03f6bb14"     // Jenkins Secret File ID
     }
 
     // 여러 단계를 그룹화
@@ -41,6 +44,17 @@ pipeline {
                 sh 'cp target/demo-0.0.1-SNAPSHOT.jar ${JAR_FILE_NAME}'
             }
         }
+
+        //stage('Inject Spring Config (Secret File)') {
+        //    steps {
+        //        withCredentials([file(credentialsId: env.SECRET_FILE_ID, variable: 'SPRING_CONFIG_FILE')]) {
+        //            sh """
+        //                echo "[INFO] Using secret file: $SPRING_CONFIG_FILE"
+        //                cp \$SPRING_CONFIG_FILE ./application-prd.properties
+        //            """
+        //        }
+        //    }
+        //}
 
         stage('Copy to Remote Server') {
             steps { // Jenkins가 원격 서버에 SSH 접속할 수 있도록 sshagent 사용
