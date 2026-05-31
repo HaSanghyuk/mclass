@@ -15,7 +15,7 @@ pipeline {
         REMOTE_USER = "ec2-user" // 원격(spring) 서버 사용자 
         REMOTE_HOST = "3.39.61.83" // 원격(spring) 서버IP(Public IP)
         REMOTE_DIR = "/home/ec2-user/deploy" // 원격 서버에 파일 복사할 경로 
-        SSH_CREDENTIALS_ID = "08f1b836-edec-4fd3-ab72-5960a61b40e3" // Jenkins SSH 자격      증명 ID
+        SSH_CREDENTIALS_ID = "08f1b836-edec-4fd3-ab72-5960a61b40e3" // Jenkins SSH 자격 증명 ID
     }
 
     // 여러 단계를 그룹화
@@ -41,7 +41,7 @@ pipeline {
                 sh 'cp target/demo-0.0.1-SNAPSHOT.jar ${JAR_FILE_NAME}'
             }
         }
-        
+
         stage('Copy to Remote Server') {
             steps { // Jenkins가 원격 서버에 SSH 접속할 수 있도록 sshagent 사용
                 sshagent (credentials: [env.SSH_CREDENTIALS_ID]) {
